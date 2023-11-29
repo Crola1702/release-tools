@@ -30,10 +30,17 @@ jobs:
         run: |
           cd jenkins-scripts/dsl
           WRITE_JOB_LOG=1 java -jar tools/jobdsl.jar gazebo_libs.dsl
-          mkdir -p /tmp/current_log_generated
-          mv *.txt /tmp/current_log_generated/
+          # mkdir -p /tmp/current_log_generated
+          # mv *.txt /tmp/current_log_generated/
       - name: Archive job list
         uses: actions/upload-artifact@v3
         with:
           name: gz_libs_jobs
           path: /tmp/current_log_generated/jobs.txt
+      - name: Update file and push to remote
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add jenkins-scripts/dsl/jobs.txt
+          git commit -m "Update jobs.txt"
+          git push origin HEAD:${GITHUB_REF}
