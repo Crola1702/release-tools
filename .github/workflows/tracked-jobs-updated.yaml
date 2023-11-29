@@ -1,7 +1,15 @@
 name: Gz Libs Jobs
 
-# base_ref / head_reaf are only available in PRs
-on: [workflow_dispatch, pull_request]
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'jenkins-scripts/dsl/*.dsl'
+  push:
+    branches:
+      - master
+    paths:
+      - 'jenkins-scripts/dsl/*.dsl'
 
 jobs:
   gz_libs_jobs:
@@ -38,6 +46,7 @@ jobs:
           name: gz_libs_jobs
           path: /tmp/current_log_generated/jobs.txt
       - name: Update file and push to remote
+        if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
